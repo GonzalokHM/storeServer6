@@ -1,6 +1,7 @@
 const express = require('express');
 require('dotenv').config();
 const { connectDB } = require('./src/config/db');
+const { setError } = require('./src/config/error');
 
 const server = express();
 
@@ -11,15 +12,15 @@ server.use('/api/v1', (req, res, next) => {
 });
 
 server.use('*', (req, res, next) => {
-  res.status(404).json('no tengo nada que ofrecerte 😞');
+    return next(setError(404,'Not found'));
+//   res.status(404).json('no tengo nada que ofrecerte 😞');
 });
 
 //controlador errores generales de servidor
 server.use((error, req, res, next) => {
-  console.error(error);
-  res
-    .status(500)
-    .json({ error: 'Internal Server Error', message: error.message });
+  return res
+    .status(error.status||500)
+    .json(error.message || 'Internal Server Error');
 });
 
 const PORT = 4001;
