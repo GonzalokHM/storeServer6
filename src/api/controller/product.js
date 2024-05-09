@@ -1,4 +1,5 @@
 const { setError } = require('../../config/error');
+const { deleteFile } = require('../../middlewares/deleteFile');
 const Product = require('../model/product');
 
 const getAllProducts = async (req, res, next) => {
@@ -22,6 +23,9 @@ const getProductByid = async (req, res, next) => {
 const createProduct = async (req, res, next) => {
   try {
     const newProduct = new Product(req.body);
+    if (req.file) {
+      newProduct.image = req.file.path;
+    }
     const productBD = await newProduct.save();
     return res.status(201).json(productBD);
   } catch (error) {
@@ -31,13 +35,29 @@ const createProduct = async (req, res, next) => {
 const updateProduct = async (req, res, next) => {
   try {
     const { id } = req.params;
-    const oldProduct = await Product.findById(id)
-    const newProduct = new Product(req.body)
-    newProduct._id = id;
-    if (newProduct.categories) {
-        newProduct.categories = [...oldProduct.categories, ...newProduct.categories]
+    const oldProduct = await Product.findById(id);
+    const newProduct = new Product(req.body);
+
+    if (req.file) {
+      newProduct.image = req.file.path;
+      if (oldProduct.image){
+        deleteFile(oldProduct.image)
+      }
     }
-    const productUpdated = await Product.findByIdAndUpdate(id, newProduct,{new:true})
+
+    newProduct._id = id;
+
+    // Agregar nuevas categorías si se proporcionan, asegurando que sean únicas
+    if (newProduct.categories) {
+      newProduct.categories = [
+        ...new Set([...oldProduct.categories, ...newProduct.categories]),
+      ];
+    }
+
+    // Actualizar el producto con las nuevas categorías
+    const productUpdated = await Product.findByIdAndUpdate(id, newProduct, {
+      new: true,
+    });
     return res.status(200).json(productUpdated);
   } catch (error) {
     return next(setError(400, "can't update products 😱"));
