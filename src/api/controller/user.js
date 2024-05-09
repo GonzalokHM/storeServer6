@@ -36,4 +36,42 @@ const login = async (req, res, next) => {
   }
 };
 
-module.exports = { register, login };
+const updateUser = async (req, res, next) => {
+  try {
+    const { id } = req.params;
+    const oldUser = await User.findById(id);
+    const newUser = new User(req.body);
+
+    if (req.file) {
+      newUser.avatar = req.file.path;
+      if (oldUser.avatar){
+        deleteFile(oldUser.avatar)
+      }
+    }
+
+    newUser._id = id;
+
+    // Agregar nuevas categorías si se proporcionan, asegurando que sean únicas
+    if (req.userName) {
+      newUser.userName = req.body.userName
+    }
+
+    const UserUpdated = await User.findByIdAndUpdate(id, newUser, {
+      new: true,
+    });
+    return res.status(200).json(UserUpdated);
+  } catch (error) {
+    return next(setError(400, "can't update Users 😱"));
+  }
+};
+const deleteUser = async (req, res, next) => {
+  try {
+    const { id } = req.params;
+    const deleteUser = await User.findByIdAndDelete(id);
+    return res.status(200).json(deleteUser);
+  } catch (error) {
+    return next(setError(400, "can't delete Users 😱"));
+  }
+};
+
+module.exports = { register, login , updateUser, deleteUser};

@@ -36,6 +36,10 @@ const updateCategory = async (req, res, next) => {
 
     const newCategory = new Category(req.body);
 
+    if (req.file) {
+      newCategory.logo = req.file.path;
+    }
+
     newCategory._id = id;
 
     if (newCategory.products){
