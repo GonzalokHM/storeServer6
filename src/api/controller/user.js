@@ -1,5 +1,6 @@
 const { setError } = require('../../config/error');
 const { generateSign } = require('../../config/jwt');
+const { deleteFile } = require('../../util/deleteFile');
 const User = require('../model/user');
 const bcrypt = require('bcrypt');
 

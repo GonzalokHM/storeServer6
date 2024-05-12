@@ -1,5 +1,5 @@
 const { setError } = require('../../config/error');
-const { deleteFile } = require('../../middlewares/deleteFile');
+const { deleteFile } = require('../../util/deleteFile');
 const Product = require('../model/product');
 
 const getAllProducts = async (req, res, next) => {
