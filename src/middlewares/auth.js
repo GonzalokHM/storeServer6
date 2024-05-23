@@ -22,4 +22,16 @@ const isAuth = async (req, res, next) => {
   }
 };
 
-module.exports = { isAuth };
+const isAdmin = async (req, res, next) => {
+  if (!req.user) {
+    return next(setError(401, 'No autenticado'));
+  }
+
+  if (req.user.rol !== 'admin') {
+    return next(setError(403, 'Esta acción sólo la pueden realizar los administradores'));
+  }
+
+  next();
+};
+
+module.exports = { isAuth , isAdmin};

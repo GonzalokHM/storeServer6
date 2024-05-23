@@ -63,6 +63,28 @@ const updateProduct = async (req, res, next) => {
     return next(setError(400, "can't update products 😱"));
   }
 };
+const addToFavorite = async (req, res, next) => {
+  try {
+    const { productId } = req.params;
+    const userId = req.user._id;
+
+    // Verificar que el producto existe
+    const product = await Product.findById(productId);
+    if (!product) {
+      return res.status(404).json({ message: 'Producto no encontrado' });
+    }
+
+    // Añadir el producto a la lista de favoritos del usuario
+    const user = await User.findByIdAndUpdate(userId, {
+      $addToSet: { favorites: productId } // $addToSet evita duplicados
+    }, { new: true }).populate('favorites');
+
+    return res.status(200).json(user);
+  } catch (error) {
+    return next(error);
+  }
+};
+
 const deleteProduct = async (req, res, next) => {
   try {
     const { id } = req.params;
@@ -78,5 +100,6 @@ module.exports = {
   getProductByid,
   createProduct,
   updateProduct,
+  addToFavorite,
   deleteProduct,
 };

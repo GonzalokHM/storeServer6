@@ -37,6 +37,29 @@ const login = async (req, res, next) => {
   }
 };
 
+const updateUserRole = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { newRole } = req.body;
+
+    const updatedUser = await User.findByIdAndUpdate(
+      id,
+      { rol: newRole },
+      { new: true }
+    );
+
+    if (!updatedUser) {
+      return res.status(404).json({ message: 'Usuario no encontrado' });
+    }
+
+    return res.status(200).json(updatedUser);
+  } catch (error) {
+    return res
+      .status(500)
+      .json({ message: 'Error actualizando el rol del usuario', error });
+  }
+};
+
 const updateUser = async (req, res, next) => {
   try {
     const { id } = req.params;
@@ -65,14 +88,26 @@ const updateUser = async (req, res, next) => {
     return next(setError(400, "can't update Users 😱"));
   }
 };
-const deleteUser = async (req, res, next) => {
-  try {
-    const { id } = req.params;
-    const deleteUser = await User.findByIdAndDelete(id);
-    return res.status(200).json(deleteUser);
-  } catch (error) {
-    return next(setError(400, "can't delete Users 😱"));
-  }
-};
+  const deleteUser = async (req, res, next) => {
+    try {
+      const { id } = req.params;
+      const authenticatedUser = req.user; // Asumimos que req.user contiene los datos del usuario autenticado
+  
+      // Verificar si el usuario es admin o está eliminando su propia cuenta
+      if (authenticatedUser.rol !== 'admin' && authenticatedUser._id.toString() !== id) {
+        return res.status(403).json({ message: 'Acceso denegado' });
+      }
+  
+      const userToDelete = await User.findByIdAndDelete(id);
+  
+      if (!userToDelete) {
+        return res.status(404).json({ message: 'Usuario no encontrado' });
+      }
+  
+      return res.status(200).json({ message: 'Usuario eliminado correctamente' });
+    } catch (error) {
+      return next(setError(400, "can't delete Users 😱"));
+    }
+  };
 
-module.exports = { register, login , updateUser, deleteUser};
+module.exports = { register, login , updateUser, deleteUser, updateUserRole};

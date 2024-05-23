@@ -5,6 +5,13 @@ const userSchema = new mongoose.Schema(
     userName: { type: String, required: true },
     password: { type: String, required: true },
     avatar: { type: String, require: true, trim: true },
+    rol: {
+      type: String,
+      required: true,
+      enum: ["admin", "user"],
+      default: "user",
+    },
+    favorites: [{ type: mongoose.Types.ObjectId, ref: 'Product' }],
   },
   { timestamps: true, collection: 'users' }
 );
