@@ -4,6 +4,16 @@ const { deleteFile } = require('../../util/deleteFile');
 const User = require('../model/user');
 const bcrypt = require('bcrypt');
 
+
+const getUsers = async (req, res, next) => {
+  try {
+    const users = await User.find();
+    return res.status(200).json(users);
+  } catch (error) {
+    return next(setError(400, 'no users found'));
+  }
+};
+
 const register = async (req, res, next) => {
   try {
     const newUser = new User(req.body);
@@ -40,11 +50,11 @@ const login = async (req, res, next) => {
 const updateUserRole = async (req, res) => {
   try {
     const { id } = req.params;
-    const { newRole } = req.body;
+    const { newRol } = req.body;
 
     const updatedUser = await User.findByIdAndUpdate(
       id,
-      { rol: newRole },
+      { rol: newRol },
       { new: true }
     );
 
@@ -110,4 +120,4 @@ const updateUser = async (req, res, next) => {
     }
   };
 
-module.exports = { register, login , updateUser, deleteUser, updateUserRole};
+module.exports = {getUsers, register, login , updateUser, deleteUser, updateUserRole};

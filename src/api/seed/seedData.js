@@ -49,6 +49,13 @@ const seed = {
       price: 15.99,
       stock: true,
     },
+    {
+      name: 'el monje que vendio su ferrari',
+      image: 'https://example.com/asfkuhahek.jpg',
+      categories: ['ebooks'],
+      price: 9.99,
+      stock: true,
+    },
   ],
 
   categories: [
@@ -71,6 +78,10 @@ const seed = {
     {
       name: 'Outlet',
       logo: 'https://example.com/logo_outlet.jpg',
+    },
+    {
+      name: 'ebooks',
+      logo: 'https://example.com/logo_ebook.jpg',
     },
   ],
 };

@@ -23,8 +23,8 @@ Esta API está diseñada para ser usada por una aplicación de gestión de produ
 
 ### Usuarios
 - PUT `/users/auth/avatar`: editar nombre de usuario y Añadir/cambiar un avatar subiendo una imagen a (Cloudinary) (Requiere JWT).
-- PUT `/users/auth/:id` (Admin): Modificar el rol de un usuario (Requiere JWT y rol de Admin).
-- DELETE `/users/auth/deleteUser`: eliminar un usuario.
+- PUT `/users/auth/:id` (Admin): Modificar el rol de un usuario (Requiere JWT y rol de Admin).(mandando newRole)
+- DELETE `/users/auth/deleteUser`: eliminar un usuario. solo puede borrar el admin, el user puede borrarse a si mismo.
 
 ### Productos
 - GET `/products`: Listar todos los productos.
