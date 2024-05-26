@@ -1,6 +1,7 @@
 const { setError } = require('../../config/error');
 const { deleteFile } = require('../../util/deleteFile');
 const Product = require('../model/product');
+const User = require('../model/user');
 
 const getAllProducts = async (req, res, next) => {
   try {
@@ -65,18 +66,18 @@ const updateProduct = async (req, res, next) => {
 };
 const addToFavorite = async (req, res, next) => {
   try {
-    const { productId } = req.params;
+    const { id } = req.params;
     const userId = req.user._id;
 
     // Verificar que el producto existe
-    const product = await Product.findById(productId);
+    const product = await Product.findById(id);
     if (!product) {
       return res.status(404).json({ message: 'Producto no encontrado' });
     }
 
     // Añadir el producto a la lista de favoritos del usuario
     const user = await User.findByIdAndUpdate(userId, {
-      $addToSet: { favorites: productId } // $addToSet evita duplicados
+      $addToSet: { favorites: id } // $addToSet evita duplicados
     }, { new: true }).populate('favorites');
 
     return res.status(200).json(user);

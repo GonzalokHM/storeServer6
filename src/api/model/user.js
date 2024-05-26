@@ -11,7 +11,7 @@ const userSchema = new mongoose.Schema(
       enum: ["admin", "user"],
       default: "user",
     },
-    favorites: [{ type: mongoose.Types.ObjectId, ref: 'Product' }],
+    favorites: [{ type: mongoose.Types.ObjectId, ref: 'products' }],
   },
   { timestamps: true, collection: 'users' }
 );

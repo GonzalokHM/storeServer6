@@ -11,7 +11,7 @@ const productSchema = new mongoose.Schema(
     }],
     price: { type: Number, require: true },
     stock: { type: Boolean, require: true, default: true },
-    holdBy: { type: mongoose.Types.ObjectId, ref: 'User' },
+    holdBy: { type: mongoose.Types.ObjectId, ref: 'users' },
   },
   {
     timestamps: true,
